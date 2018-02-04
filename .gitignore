@@ -1,0 +1,16 @@
+.DS_Store
+.npminstall
+.vscode
+.yarninstall
+*.log
+*.out
+*.lock
+*.sass-cache
+*styles.css
+*.test
+*.idea
+data
+dist
+logs
+node_modules
+/1
