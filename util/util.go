@@ -8,6 +8,8 @@ import (
 	"encoding/base32"
 	"github.com/pborman/uuid"
 	"bytes"
+	"github.com/XGoServer/model"
+	"net"
 )
 
 const isOpenDebug = true
@@ -77,4 +79,18 @@ func NewId() string {
 	encoder.Close()
 	b.Truncate(26) // removes the '==' padding
 	return b.String()
+}
+
+func GetIpAddress(r *http.Request) string {
+	address := r.Header.Get(model.HEADER_FORWARDED)
+
+	if len(address) == 0 {
+		address = r.Header.Get(model.HEADER_REAL_IP)
+	}
+
+	if len(address) == 0 {
+		address, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
+
+	return address
 }

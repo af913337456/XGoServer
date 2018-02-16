@@ -29,6 +29,10 @@ func setRouter() *mux.Router {
 	router.HandleFunc("/test",test).Methods("GET")
 	router.HandleFunc("/test2",test2).Methods("GET")
 	router.HandleFunc("/test3",test3).Methods("GET")
+	f := core.MyHandlerFunc(func(context *core.Context, writer http.ResponseWriter, request *http.Request) {
+
+	})
+	router.Handle("/fuck",f).Methods("GET")
 	/** 在下面添加你的回调方法 */
 	/** add your func below */
 	return router
