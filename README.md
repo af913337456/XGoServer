@@ -19,7 +19,6 @@
 * 日志模块，``alecthomas/log4go``
 * 路由模块，``gorilla/mux``
 * 硬存储 / 软存储 采用 ``xorm`` 框架
-* 多路 gorutine 设计，增加并发性能
 * 服务端通用的输出数据结构的整合，例如 json
 
 ##### 如果你想直接输出一条 json 给客户端，这样子
@@ -176,7 +175,7 @@ func SimpleInit() bool {
 }
 ```
 
-### 多路 gorutine 设计，增加并发性能
+### 服务端通用的输出数据结构的整合函数组
 
 ```go
 type FinalResult struct {
