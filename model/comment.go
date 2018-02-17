@@ -1,5 +1,12 @@
 package model
 
+/**
+
+作者(Author): 林冠宏 / 指尖下的幽灵
+
+Created on : 2018/2/10
+
+*/
 
 type Comment struct {
 	Id      string `xorm:"pk" json:"id,omitempty"`

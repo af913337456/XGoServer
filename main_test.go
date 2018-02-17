@@ -1,5 +1,13 @@
 package main
 
+/**
+
+作者(Author): 林冠宏 / 指尖下的幽灵
+
+Created on : 2018/2/10
+
+*/
+
 import "testing"
 import (
 	"github.com/XGoServer/core"

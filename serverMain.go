@@ -29,10 +29,9 @@ func setRouter() *mux.Router {
 	router.HandleFunc("/test",test).Methods("GET")
 	router.HandleFunc("/test2",test2).Methods("GET")
 	router.HandleFunc("/test3",test3).Methods("GET")
-	f := core.MyHandlerFunc(func(context *core.Context, writer http.ResponseWriter, request *http.Request) {
 
-	})
-	router.Handle("/fuck",f).Methods("GET")
+	router.Handle("/fuck",core.ApiNormalHandler(getToken)).Methods("GET")
+	router.Handle("/check",core.ApiRequestTokenHandler(handleToken)).Methods("GET")
 	/** 在下面添加你的回调方法 */
 	/** add your func below */
 	return router
@@ -54,6 +53,25 @@ func test2(w http.ResponseWriter,r *http.Request)  {
 		m["fuck"] = "fuck"
 		return m
 	})
+}
+
+func getToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
+
+	core.HandlerMapWithOutputJson(writer, func() map[string]interface{} {
+		tokenStr,err := core.BuildDefaultToken(func(tokenData *core.TokenData) {
+			tokenData.UserId = "123456"
+			tokenData.Roles  = "normal"
+		})
+		if err != nil {
+			return util.GetCommonErr(err.Error())
+		}
+		return util.GetCommonSuccess(tokenStr)
+	})
+
+}
+
+func handleToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
+	util.RenderJson(writer,context)
 }
 
 func test3(w http.ResponseWriter,r *http.Request)  {

@@ -1,5 +1,13 @@
 package core
 
+/**
+
+作者(Author): 林冠宏 / 指尖下的幽灵
+
+Created on : 2018/2/10
+
+*/
+
 import (
 	"github.com/XGoServer/threeLibs/go-xorm/xorm"
 	"github.com/XGoServer/threeLibs/go-xorm/core"
