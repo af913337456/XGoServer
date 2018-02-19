@@ -21,6 +21,7 @@ import (
 	"github.com/XGoServer/core"
 	"github.com/XGoServer/model"
 	"github.com/XGoServer/util"
+	"github.com/XGoServer/encrypt"
 )
 
 func setRouter() *mux.Router {
@@ -32,6 +33,9 @@ func setRouter() *mux.Router {
 
 	router.Handle("/fuck",core.ApiNormalHandler(getToken)).Methods("GET")
 	router.Handle("/check",core.ApiRequestTokenHandler(handleToken)).Methods("GET")
+
+	router.HandleFunc("/enc",encOutput).Methods("GET")
+	router.HandleFunc("/dec",decOutput).Methods("POST")
 	/** 在下面添加你的回调方法 */
 	/** add your func below */
 	return router
@@ -55,6 +59,7 @@ func test2(w http.ResponseWriter,r *http.Request)  {
 	})
 }
 
+// 获取 token
 func getToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
 
 	core.HandlerMapWithOutputJson(writer, func() map[string]interface{} {
@@ -70,8 +75,31 @@ func getToken(context *core.Context, writer http.ResponseWriter, request *http.R
 
 }
 
+// 解析输出 token
 func handleToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
 	util.RenderJson(writer,context)
+}
+
+// 加密输出
+func encOutput(w http.ResponseWriter, r *http.Request)  {
+	core.HandlerMapWithOutputJson(w, func() map[string]interface{} {
+		d := "狗年平安"
+		aes := encrypt.DefaultAES{}
+		return util.GetCommonSuccess(aes.AesEncryptStr(d))
+	})
+}
+
+//解密输出
+func decOutput(w http.ResponseWriter, r *http.Request)  {
+	core.HandlerMapWithOutputJson(w, func() map[string]interface{} {
+		d := r.PostFormValue("enc")
+		if d == "" {
+			return util.GetCommonErr("empty")
+		}
+		aes := encrypt.DefaultAES{}
+		util.LogInfo("d ====> "+d)
+		return util.GetCommonSuccess(aes.AesDecryptStr(d))
+	})
 }
 
 func test3(w http.ResponseWriter,r *http.Request)  {
@@ -98,3 +126,21 @@ func test3(w http.ResponseWriter,r *http.Request)  {
 		return m
 	})
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

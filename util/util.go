@@ -20,6 +20,12 @@ func LogInfo(str string)  {
 	}
 }
 
+func LogInterface(arg interface{})  {
+	if isOpenDebug {
+		l4g.Info(arg)
+	}
+}
+
 func LogError(str string)  {
 	if isOpenDebug {
 		l4g.Error(str)
@@ -91,6 +97,5 @@ func GetIpAddress(r *http.Request) string {
 	if len(address) == 0 {
 		address, _, _ = net.SplitHostPort(r.RemoteAddr)
 	}
-
 	return address
 }

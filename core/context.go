@@ -41,6 +41,7 @@ func (x XHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 	// 不需要 token
+	util.LogInterface(c)
 	x.handleFunc(c,w,r)
 }
 
