@@ -7,20 +7,12 @@ import (
 	"encoding/base64"
 )
 
-/**
+type Base64Aes struct {
 
-作者(Author): 林冠宏 / 指尖下的幽灵
-
-Created on : 2018/2/19
-
-*/
-
-type DefaultAES struct {
-	
 }
 
-func (x DefaultAES) AesEncryptStr(origData string) string {
-	dataBytes,err := x.AesEncrypt([]byte(origData),[]byte(DefaultAESKey))
+func (b Base64Aes) AesEncryptStr(origData string) string {
+	dataBytes,err := b.AesEncrypt([]byte(origData),[]byte(DefaultAESKey))
 	retStr := ""
 	if dataBytes != nil {
 		retStr = base64.StdEncoding.EncodeToString(dataBytes)
@@ -31,14 +23,14 @@ func (x DefaultAES) AesEncryptStr(origData string) string {
 	return retStr
 }
 
-func (x DefaultAES) AesDecryptStr(encrypted string) string {
+func (b Base64Aes) AesDecryptStr(encrypted string) string {
 	// 验证输入参数
 	// 必须为aes.BlockSize的倍数 --- 16
 	encBytes,err := base64.StdEncoding.DecodeString(encrypted)
 	if len(encBytes)%aes.BlockSize != 0 || err != nil{
 		return "invalid"
 	}
-	dataBytes,err := x.AesDecrypt(encBytes,[]byte(DefaultAESKey))
+	dataBytes,err := b.AesDecrypt(encBytes,[]byte(DefaultAESKey))
 	retStr := ""
 	if dataBytes != nil {
 		retStr = string(dataBytes)
@@ -49,13 +41,13 @@ func (x DefaultAES) AesDecryptStr(encrypted string) string {
 	return retStr
 }
 
-func (x DefaultAES) AesEncrypt(origData, key []byte) ([]byte, error) {
+func (b Base64Aes) AesEncrypt(origData, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 	blockSize := block.BlockSize()
-	origData = pKCS5Padding(origData, blockSize)
+	origData = PKCS5Padding(origData, blockSize)
 	// origData = ZeroPadding(origData, block.BlockSize())
 	blockMode := cipher.NewCBCEncrypter(block, key[:blockSize])
 	crypted := make([]byte, len(origData))
@@ -65,31 +57,30 @@ func (x DefaultAES) AesEncrypt(origData, key []byte) ([]byte, error) {
 	return crypted, nil
 }
 
-func (x DefaultAES) AesDecrypt(encrypted, key []byte) ([]byte, error) {
+func (b Base64Aes) AesDecrypt(crypted, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
 	blockSize := block.BlockSize()
 	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
-	origData := make([]byte, len(encrypted))
-	// origData := encrypted
-	blockMode.CryptBlocks(origData, encrypted)
-	origData = pKCS5UnPadding(origData)
+	origData := make([]byte, len(crypted))
+	// origData := crypted
+	blockMode.CryptBlocks(origData, crypted)
+	origData = PKCS5UnPadding(origData)
 	// origData = ZeroUnPadding(origData)
 	return origData, nil
 }
 
-func pKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize//需要padding的数目
-	//只要少于256就能放到一个byte中，默认的blockSize=16(即采用16*8=128, AES-128长的密钥)
-	//最少填充1个byte，如果原文刚好是blocksize的整数倍，则再填充一个blocksize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)//生成填充的文本
+func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
 
-func pKCS5UnPadding(origData []byte) []byte {
+func PKCS5UnPadding(origData []byte) []byte {
 	length := len(origData)
+	// 去掉最后一个字节 unpadding 次
 	unpadding := int(origData[length-1])
 	return origData[:(length - unpadding)]
 }
