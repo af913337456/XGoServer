@@ -36,8 +36,9 @@ func CreateDefaultMysqlEngine(dbType,dbUser,dbPw,dbName string) bool {
 	Engine.SetMaxIdleConns(6)
 	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, DbPrefix)
 	Engine.SetTableMapper(tbMapper)
-	Engine.StoreEngine(DbEngineType)
-	Engine.Charset(DbChartSet)
+	// 下面的两句不要在这里开启，是没效果的，它是针对内部的一个 session，不是全局
+	//Engine.StoreEngine(DbEngineType)
+	//Engine.Charset(DbChartSet)
 	err = Engine.Ping()
 	if err != nil {
 		l4g.Info("create default XEngine failed : ===> %s",err.Error())
