@@ -53,10 +53,31 @@ func CreateTables(beans ...interface{}) bool {
 		l4g.Error("engine is null,create tables failed!")
 		return false
 	}
-	err := Engine.CreateTables(beans...)
+	// 开始建表
+	session := Engine.NewSession()
+	defer session.Close()
+	session.StoreEngine(DbEngineType)
+	session.Charset(DbChartSet)
+	err := session.Begin()
+	if err != nil {
+		l4g.Error("engine begin tra failed "+err.Error())
+		return false
+	}
+
+	for _, bean := range beans {
+		err = session.CreateTable(bean)
+		if err != nil {
+			session.Rollback()
+			l4g.Error("CreateTable failed "+err.Error())
+			return false
+		}
+	}
+	err = session.Commit()
 	if err != nil {
 		l4g.Error("CreateTables failed ",err.Error())
 		return false
 	}
+	// 同步不需要设置
+	Engine.Sync2(beans...)
 	return true
 }
