@@ -20,6 +20,6 @@ func TestConnectStr(t *testing.T) {
 }
 
 func TestCreateEngine(t *testing.T) {
-	config.BindServerConfig()
+	config.BindServerConfig("server.json","log.json")
 	CreateDefaultMysqlEngine("mysql",config.ServerConfig.DbUser,config.ServerConfig.DbPw,config.ServerConfig.DbName)
 }

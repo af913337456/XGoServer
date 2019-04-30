@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"github.com/XGoServer/model"
 	"net"
+	"encoding/xml"
 )
 
 const isOpenDebug = true
@@ -48,6 +49,24 @@ func BindJson(r *http.Request,params interface{}) map[string]interface{} {
 		return GetCommonErr("params error")
 	}
 	return nil
+}
+
+// 保持 html 格式输出 json
+func JSONMarshalKeepHTML(t interface{}) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
+}
+
+// 渲染成 xml
+func RenderXml(w http.ResponseWriter, o interface{}) {
+	if b, err := xml.Marshal(o); err != nil {
+		w.Write([]byte(""))
+	} else {
+		w.Write(b)
+	}
 }
 
 func GetCommonErr(info interface{}) map[string]interface{} {

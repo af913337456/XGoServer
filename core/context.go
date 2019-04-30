@@ -12,11 +12,17 @@ type Context struct {
 	RoutePath string  	`json:"routePath"`
 }
 
+type ReqContext struct {
+	C *Context
+	W http.ResponseWriter
+	R *http.Request
+}
+
 const TokenAuth = "Authorization"
 const SecretKey = "1234567890asdfghjklzxcvbnmqwert"
 
 type XHandler struct {
-	handleFunc     func(*Context, http.ResponseWriter, *http.Request)
+	handleFunc   func(*ReqContext)
 	requireToken bool
 }
 
@@ -37,23 +43,23 @@ func (x XHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)  {
 		c.TokenData = *tokenData
 		c.TokenStr  = tokenStr
 		// util.RenderJson(w,c)
-		x.handleFunc(c,w,r)
+		x.handleFunc(&ReqContext{c,w,r})
 		return
 	}
 	// 不需要 token
 	util.LogInterface(c)
-	x.handleFunc(c,w,r)
+	x.handleFunc(&ReqContext{c,w,r})
 }
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTZhYWEiLCJ1c2VyUm9sZSI6Im5vcm1hbCJ9.w-wBZWYYKgMQa50qZRc9qosiLaEtuK6t5b_tZjwhJ7A
-func ApiRequestTokenHandler(f func(*Context, http.ResponseWriter, *http.Request)) http.Handler {
+func ApiRequestTokenHandler(f func(*ReqContext)) http.Handler {
 	x := XHandler{}
 	x.handleFunc = f
 	x.requireToken = true
 	return x
 }
 
-func ApiNormalHandler(f func(*Context, http.ResponseWriter, *http.Request)) http.Handler {
+func ApiNormalHandler(f func(*ReqContext)) http.Handler {
 	x := XHandler{}
 	x.handleFunc = f
 	x.requireToken = false

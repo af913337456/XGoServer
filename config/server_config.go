@@ -4,6 +4,8 @@ import (
 	io "io/ioutil"
 	json "encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
 )
 
 type configer struct{
@@ -14,19 +16,16 @@ func NewConfiger () *configer {
 	return &configer{}
 }
 
-func (s *configer) Load (filename string, v interface{}) bool {
+func (s *configer) Load (filename string, v interface{}) {
 	data, err := io.ReadFile(filename)
 	if err != nil {
-		fmt.Println("Load config json failed ===> filename : "+filename+" -- "+err.Error())
-		return false
+		panic(fmt.Sprintf("Load config json failed ===> filename : %s %s",filename,err.Error()))
 	}
 	datajson := []byte(data)
 	err = json.Unmarshal(datajson, v)
 	if err != nil{
-		fmt.Println("read json failed ===> filename : "+filename+" -- "+err.Error())
-		return false
+		panic(fmt.Sprintf("read json failed ===> filename : %s %s",filename,err.Error()))
 	}
-	return true
 }
 
 type ServerConfigStruct struct{
@@ -51,17 +50,32 @@ type LogConfigStruct struct {
 var ServerConfig  ServerConfigStruct
 var LogConfig LogConfigStruct
 
-func BindServerConfig() bool {
+func BindServerConfig(serverConfigFileName,logConfigFileName string) {
 	configer := NewConfiger()
 	/** 传入的 结构体 要和 json 的格式对上,否则返回是 null */
-	isDbSuccess  := configer.Load("config/server.json",  &ServerConfig)
-	isLogSuccess := configer.Load("config/log.json", &LogConfig)
-	if !isDbSuccess || !isLogSuccess {
-		return false
-	}
+	configer.Load(FindConfigFile(serverConfigFileName),  &ServerConfig)
+	configer.Load(FindConfigFile(logConfigFileName), &LogConfig)
 	jsonBytes,_ := json.Marshal(&ServerConfig)
 	fmt.Println(string(jsonBytes))
 	jsonBytes,_ = json.Marshal(&LogConfig)
 	fmt.Println(string(jsonBytes))
-	return true
+}
+
+func FindConfigFile(fileName string) string {
+	if _, err := os.Stat("./config/" + fileName); err == nil {
+		fileName, _ = filepath.Abs("./config/" + fileName)
+	} else if _, err := os.Stat("../config/" + fileName); err == nil {
+		fileName, _ = filepath.Abs("../config/" + fileName)
+	} else if _, err := os.Stat("../../config/" + fileName); err == nil {
+		fileName, _ = filepath.Abs("../../config/" + fileName)
+	}else if _, err := os.Stat("../../../config/" + fileName); err == nil {
+		fileName, _ = filepath.Abs("../../../config/" + fileName)
+	}else if _, err := os.Stat("../../../../config/" + fileName); err == nil {
+		fileName, _ = filepath.Abs("../../../../config/" + fileName)
+	} else if _, err := os.Stat("config/"+fileName); err == nil {
+		fileName, _ = filepath.Abs("config/"+fileName)
+	} else if _, err := os.Stat(fileName); err == nil {
+		fileName, _ = filepath.Abs(fileName)
+	}
+	return fileName
 }

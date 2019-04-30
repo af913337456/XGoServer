@@ -19,21 +19,15 @@ import (
 	"github.com/XGoServer/util"
 )
 
-func SimpleInit() bool {
-	if config.BindServerConfig() {
-		fmt.Println("BindServerConfig ==================> success")
-		config.ConfigureLog(&config.LogConfig)
-		CreateDefaultMysqlEngine(
-			"mysql",
-			config.ServerConfig.DbUser,
-			config.ServerConfig.DbPw,
-
-			config.ServerConfig.DbName)
-		return true
-	}else{
-		fmt.Println("BindServerConfig ===> failed")
-		return false
-	}
+func SimpleInit() {
+	config.BindServerConfig("server.json","log.json")
+	fmt.Println("BindServerConfig ==================>","success")
+	config.ConfigureLog(&config.LogConfig)
+	CreateDefaultMysqlEngine(
+		"mysql",
+		config.ServerConfig.DbUser,
+		config.ServerConfig.DbPw,
+		config.ServerConfig.DbName)
 }
 
 // http 监听
@@ -51,9 +45,7 @@ func HttpListen(router *mux.Router)  {
 // https 监听
 // ca.crt / server.crt / server.key 共三个文件
 func HttpsListen(router *mux.Router,caCrt, serveCrt,serverKey string)  {
-
 	SimpleInit()
-
 	basePath := "" // /home/lgh/
 	pool := x509.NewCertPool()
 	caCertPath := basePath+caCrt // ca.crt

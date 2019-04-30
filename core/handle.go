@@ -11,6 +11,7 @@ Created on : 2018/2/10
 import (
 	"net/http"
 	"github.com/XGoServer/util"
+	"fmt"
 )
 
 
@@ -58,6 +59,21 @@ func HandlerStructWithOutputJson(w http.ResponseWriter,handle func() interface{}
 	ret := <-RetChannel
 	mapRet := ret.Data.(*interface{})
 	util.RenderJson(w,mapRet)
+}
+
+// 输出 xml 结果
+func HandlerStructWithOutputXML(w http.ResponseWriter,handle func() interface{}){
+	RetChannel := make(RetChannel, 1)
+	go func() {
+		result := FinalResult{}
+		data := handle()
+		result.Data = &data
+		RetChannel <- result
+		close(RetChannel)
+	}()
+	ret := <-RetChannel
+	mapRet := ret.Data.(*interface{})
+	util.RenderXml(w,mapRet)
 }
 
 func HandlerStructWithOutputString(w http.ResponseWriter,handle func() string) {

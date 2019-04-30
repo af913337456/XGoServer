@@ -60,9 +60,9 @@ func test2(w http.ResponseWriter,r *http.Request)  {
 }
 
 // 获取 token
-func getToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
+func getToken(req *core.ReqContext)  {
 
-	core.HandlerMapWithOutputJson(writer, func() map[string]interface{} {
+	core.HandlerMapWithOutputJson(req.W, func() map[string]interface{} {
 		tokenStr,err := core.BuildDefaultToken(func(tokenData *core.TokenData) {
 			tokenData.UserId = "123456"
 			tokenData.Roles  = "normal"
@@ -76,8 +76,8 @@ func getToken(context *core.Context, writer http.ResponseWriter, request *http.R
 }
 
 // 解析输出 token
-func handleToken(context *core.Context, writer http.ResponseWriter, request *http.Request)  {
-	util.RenderJson(writer,context)
+func handleToken(req *core.ReqContext)  {
+	util.RenderJson(req.W,req.C.TokenData)
 }
 
 // 加密输出
