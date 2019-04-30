@@ -45,6 +45,18 @@ func test2(w http.ResponseWriter,r *http.Request)  {
 // 结果 ： {"msg":"blow me a kiss"}
 ```
 
+##### 令牌机制
+
+```golang
+
+// core.ApiNormalHandler 不要求在请求头中传递 Token
+router.Handle("/fuck",core.ApiNormalHandler(getToken)).Methods("GET")
+
+// core.ApiRequestTokenHandler 要求在请求头中带上 Token
+router.Handle("/check",core.ApiRequestTokenHandler(handleToken)).Methods("GET")
+
+```
+
 ##### 与数据库交互
 
 ```go
