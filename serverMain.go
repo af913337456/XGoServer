@@ -61,7 +61,6 @@ func test2(w http.ResponseWriter,r *http.Request)  {
 
 // 获取 token
 func getToken(req *core.ReqContext)  {
-
 	core.HandlerMapWithOutputJson(req.W, func() map[string]interface{} {
 		tokenStr,err := core.BuildDefaultToken(func(tokenData *core.TokenData) {
 			tokenData.UserId = "123456"
@@ -72,7 +71,6 @@ func getToken(req *core.ReqContext)  {
 		}
 		return util.GetCommonSuccess(tokenStr)
 	})
-
 }
 
 // 解析输出 token

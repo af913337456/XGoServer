@@ -51,6 +51,18 @@ router.Handle("/fuck",core.ApiNormalHandler(getToken)).Methods("GET")
 // core.ApiRequestTokenHandler 要求在请求头中带上 Token
 router.Handle("/check",core.ApiRequestTokenHandler(handleToken)).Methods("GET")
 
+// 定义对应上下文的路由方法
+func getToken(req *core.ReqContext)  {
+    // 从 req 中读出内容
+	core.HandlerMapWithOutputJson(req.W, func() map[string]interface{} {
+		tokenStr,_ := core.BuildDefaultToken(func(tokenData *core.TokenData) {
+			tokenData.UserId = "123456"
+			tokenData.Roles  = "normal"
+		})
+		return util.GetCommonSuccess(tokenStr)
+	})
+}
+
 ```
 
 ##### 与数据库交互
