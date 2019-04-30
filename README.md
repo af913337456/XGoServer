@@ -163,20 +163,15 @@ func HttpListen(router *mux.Router)  {
 
 ```golang
 // 绑定配置 json 的信息 以及 初始化 xorm mysql数据库引擎
-func SimpleInit() bool {
-	if config.BindServerConfig() {
-		fmt.Println("BindServerConfig ==================> success")
-		config.ConfigureLog(&config.LogConfig)
-		CreateDefaultMysqlEngine(
-			"mysql",
-			config.ServerConfig.DbUser,
-			config.ServerConfig.DbPw,
-			config.ServerConfig.DbName)
-		return true
-	}else{
-		fmt.Println("BindServerConfig ===> failed")
-		return false
-	}
+func SimpleInit() {
+	config.BindServerConfig("server.json","log.json")
+	fmt.Println("BindServerConfig ==================>","success")
+	config.ConfigureLog(&config.LogConfig)
+	CreateDefaultMysqlEngine(
+		"mysql",
+		config.ServerConfig.DbUser,
+		config.ServerConfig.DbPw,
+		config.ServerConfig.DbName)
 }
 ```
 
@@ -214,6 +209,10 @@ func HandlerMap(handle func() map[string]interface{}) *map[string]interface{} {
 	ret := <-RetChannel
 	return ret.Data.(*map[string]interface{})
 }
+
+// 还有
+// HandlerStructWithOutputXML  // XML 的输出格式
+// HandlerStructWithOutputString
 
 func HandlerStructWithOutputJson(w http.ResponseWriter,handle func() interface{})  {
 	RetChannel := make(RetChannel, 1)
