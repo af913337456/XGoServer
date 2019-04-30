@@ -4,10 +4,6 @@
 
 > 博客：http://www.cnblogs.com/linguanh/
 
-> GitHub ： https://github.com/af913337456/
-
-> 腾讯云专栏：  https://cloud.tencent.com/developer/user/1148436/activities
-
 ---
 
 <strong>一个基础性、模块完整且安全可靠的服务端框架</strong>
