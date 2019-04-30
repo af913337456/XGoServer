@@ -5,27 +5,29 @@ import (
 	"github.com/XGoServer/util"
 )
 
-type Context struct {
+
+const TokenAuth = "Authorization"
+const SecretKey = "1234567890asdfghjklzxcvbnmqwert"
+
+type Context struct {  // 可以自定义的基础上下文
 	TokenData TokenData
 	TokenStr  string  	`json:"tokenStr"`
 	IpAddress string  	`json:"ipAddress"`
 	RoutePath string  	`json:"routePath"`
 }
 
-type ReqContext struct {
-	C *Context
-	W http.ResponseWriter
-	R *http.Request
+type ReqContext struct {  // 公用请求上下文
+	C *Context			  // 基础上下文
+	W http.ResponseWriter // 输出
+	R *http.Request       // 输入
 }
-
-const TokenAuth = "Authorization"
-const SecretKey = "1234567890asdfghjklzxcvbnmqwert"
 
 type XHandler struct {
 	handleFunc   func(*ReqContext)
 	requireToken bool
 }
 
+// 自定义封装实现 handler 接口
 func (x XHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)  {
 
 	tokenStr := r.Header.Get(TokenAuth)
