@@ -60,6 +60,20 @@ func HandlerStructWithOutputJson(w http.ResponseWriter,handle func() interface{}
 	util.RenderJson(w,mapRet)
 }
 
+func HandlerStructWithOutputString(w http.ResponseWriter,handle func() string) {
+	RetChannel := make(RetChannel, 1)
+	go func() {
+		result := FinalResult{}
+		data := handle()
+		result.Data = &data
+		RetChannel <- result
+		close(RetChannel)
+	}()
+	ret := <-RetChannel
+	dataStr := (ret.Data).(*string)
+	fmt.Fprint(w,*dataStr)
+}
+
 func HandlerMapWithOutputJson(w http.ResponseWriter,handle func() map[string]interface{}){
 	RetChannel := make(RetChannel, 1)
 	go func() {
