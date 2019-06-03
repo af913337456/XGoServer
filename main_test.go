@@ -16,10 +16,7 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	if !core.SimpleInit() {
-		return
-	}
-
+	core.SimpleInit()
 	if !core.CreateTables(model.Book{}, model.Comment{}){
 		return
 	}

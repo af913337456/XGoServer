@@ -1,9 +1,0 @@
-{
-  "Host": "127.0.0.1",
-  "Port": ":8884",
-  "FilePort":":8885",
-  "DbName":"lgh",
-  "DbUser":"root",
-  "DbPw":"123aaa",
-  "DbPort":"3306"
-}

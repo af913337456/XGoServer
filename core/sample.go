@@ -20,20 +20,19 @@ import (
 )
 
 func SimpleInit() {
-	config.BindServerConfig("server.json","log.json")
+	config.BindServerConfig("server.json")
 	fmt.Println("BindServerConfig ==================>","success")
-	config.ConfigureLog(&config.LogConfig)
 	CreateDefaultMysqlEngine(
 		"mysql",
-		config.ServerConfig.DbUser,
-		config.ServerConfig.DbPw,
-		config.ServerConfig.DbName)
+		config.ServerConfig.MySQL.DbUser,
+		config.ServerConfig.MySQL.DbPw,
+		config.ServerConfig.MySQL.DbName)
 }
 
 // http 监听
 func HttpListen(router *mux.Router)  {
 	SimpleInit()
-	url := config.ServerConfig.Host+config.ServerConfig.Port
+	url := config.ServerConfig.Server.Host+config.ServerConfig.Server.Port
 	util.LogInfo("服务启动于 : "+url)
 	err := http.ListenAndServe(url,router)
 	if err !=nil {
@@ -57,7 +56,7 @@ func HttpsListen(router *mux.Router,caCrt, serveCrt,serverKey string)  {
 	}
 	pool.AppendCertsFromPEM(caCrtBytes)
 	s := &http.Server{
-		Addr:    config.ServerConfig.Host+config.ServerConfig.Port, // :8888
+		Addr:    config.ServerConfig.Server.Host+config.ServerConfig.Server.Port, // :8888
 		Handler: router,
 		TLSConfig: &tls.Config{
 			ClientCAs:  pool,

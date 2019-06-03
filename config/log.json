@@ -1,8 +1,0 @@
-{
-  "EnableConsole": true,
-  "ConsoleLevel": "DEBUG",
-  "EnableFile": true,
-  "FileLevel": "INFO",
-  "FileFormat": "",
-  "FileLocation": ""
-}

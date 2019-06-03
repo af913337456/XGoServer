@@ -1,0 +1,22 @@
+{
+  "Server":{
+    "Host": "127.0.0.1",
+    "Port": ":8884",
+    "FilePort":":8885"
+  },
+  "MySQL":{
+    "DbHost":"127.0.0.1",
+    "DbName":"lgh",
+    "DbUser":"root",
+    "DbPw":"123aaa",
+    "DbPort":"3306"
+  },
+  "Log":{
+    "EnableConsole": true,
+    "ConsoleLevel": "DEBUG",
+    "EnableFile": true,
+    "FileLevel": "INFO",
+    "FileFormat": "",
+    "FileLocation": ""
+  }
+}
